@@ -77,6 +77,7 @@ public class PatchManager {
         if (IGNORED_OF_CHANGES.contains(className)) {
           classData = getVanillaClassData(className, classData);
         } else if (transformers.containsKey(className)) {
+          System.out.println("crab");
           ClassReader reader = new ClassReader(classData);
           ClassNode node = new ClassNode();
           reader.accept(new DeobfAdapter(node, DeobfTransformer.REMAPPER), ClassReader.EXPAND_FRAMES);
@@ -85,7 +86,7 @@ public class PatchManager {
           transformers.get(className.replace('.', '/')).transform(node).accept(writer);
           return writer.toByteArray();
         } else {
-          throw new IllegalStateException("Failed to patch class: " + className);
+          throw new IllegalStateException("crab - " + className);
         }
       }
     }
@@ -152,17 +153,17 @@ public class PatchManager {
       // probably in dev env, but check just in case
       if (classLoader.getClassBytes("net.minecraft.client.Minecraft") == null) {
         throw new IllegalStateException(
-            "Couldn't find patch files in production. Something is very wrong.");
+            "Couldn't find crab files in production. Something is very wrong.");
       } else {
         LOGGER.warn(
-            "Failed to find patches, but client is probably in dev env so we're skipping them");
+            "Failed to find crabs, but client is probably in dev env so we're skipping them");
       }
     } else {
       // Load all patches. There's probably some performance/memory usage balancing needed here, but
       // at the moment it loads everything into memory
       // and once they're used they get deleted (or at least removed from map, so gc needed to
       // actually delete them)
-      LOGGER.info("Loading patch");
+      LOGGER.info("Loading crab");
       long start = System.nanoTime();
       Pattern patchFilePattern = Pattern.compile("binpatch/client/.*.binpatch");
       LzmaInputStream decompressedInput = new LzmaInputStream(patchArchive, new Decoder());
@@ -182,12 +183,12 @@ public class PatchManager {
             jis.closeEntry();
           }
         } catch (IOException ex) {
-          LOGGER.warn("Failed to load a patch", ex);
+          LOGGER.warn("Failed to load a crab", ex);
         }
       }
       long end = System.nanoTime();
       LOGGER.info(
-          "Loaded {} patches in {} milliseconds",
+          "Loaded {} crabs in {} milliseconds",
           patches.size(),
           ((double) end - (double) start) / 1_000_000.0);
     }
